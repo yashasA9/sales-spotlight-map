@@ -121,10 +121,10 @@ export const PredictiveAnalytics = ({ data }: PredictiveAnalyticsProps) => {
             <h4 className="font-semibold">7-Day Forecast</h4>
           </div>
           <p className="text-2xl font-bold">
-            ${totalForecastSales.toFixed(2)}
+            ₹{totalForecastSales.toFixed(2)}
           </p>
           <p className="text-sm text-muted-foreground">
-            Avg ${(totalForecastSales / forecastDays).toFixed(2)}/day
+            Avg ₹{(totalForecastSales / forecastDays).toFixed(2)}/day
           </p>
         </Card>
 
@@ -134,7 +134,7 @@ export const PredictiveAnalytics = ({ data }: PredictiveAnalyticsProps) => {
             <h4 className="font-semibold">Current Avg Daily</h4>
           </div>
           <p className="text-2xl font-bold">
-            ${avgDailySales.toFixed(2)}
+            ₹{avgDailySales.toFixed(2)}
           </p>
           <p className="text-sm text-muted-foreground">
             Based on {daysInDataset} days

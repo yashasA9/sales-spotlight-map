@@ -48,7 +48,7 @@ export const TopProducts = ({ data }: TopProductsProps) => {
               </div>
             </div>
             <div className="text-right">
-              <p className="font-semibold">${product.total.toFixed(2)}</p>
+              <p className="font-semibold">₹{product.total.toFixed(2)}</p>
             </div>
           </div>
         ))}

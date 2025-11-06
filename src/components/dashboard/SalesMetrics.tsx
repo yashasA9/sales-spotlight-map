@@ -15,7 +15,7 @@ export const SalesMetrics = ({ data }: SalesMetricsProps) => {
   const metrics = [
     {
       title: "Total Sales",
-      value: `$${totalSales.toFixed(2)}`,
+      value: `₹${totalSales.toFixed(2)}`,
       icon: DollarSign,
       color: "text-primary",
       bgColor: "bg-primary/10",
@@ -29,7 +29,7 @@ export const SalesMetrics = ({ data }: SalesMetricsProps) => {
     },
     {
       title: "Avg Transaction",
-      value: `$${averageTransaction.toFixed(2)}`,
+      value: `₹${averageTransaction.toFixed(2)}`,
       icon: TrendingUp,
       color: "text-accent",
       bgColor: "bg-accent/10",
