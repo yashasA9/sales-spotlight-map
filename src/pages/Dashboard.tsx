@@ -2,12 +2,14 @@ import { useState } from "react";
 import Papa from "papaparse";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, TrendingUp, DollarSign, Package } from "lucide-react";
+import { Upload } from "lucide-react";
 import { SalesChart } from "@/components/dashboard/SalesChart";
 import { CategoryChart } from "@/components/dashboard/CategoryChart";
 import { TopProducts } from "@/components/dashboard/TopProducts";
 import { SalesMetrics } from "@/components/dashboard/SalesMetrics";
 import { PredictiveAnalytics } from "@/components/dashboard/PredictiveAnalytics";
+import { GenericDataTable } from "@/components/dashboard/GenericDataTable";
+import { GenericAnalytics } from "@/components/dashboard/GenericAnalytics";
 
 export interface SalesData {
   "Invoice ID": string;
@@ -21,8 +23,14 @@ export interface SalesData {
 }
 
 const Dashboard = () => {
-  const [salesData, setSalesData] = useState<SalesData[]>([]);
+  const [csvData, setCsvData] = useState<Record<string, string>[]>([]);
+  const [columns, setColumns] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check if data matches the sales data structure
+  const isSalesData = columns.includes("Total") && 
+                       columns.includes("Date") && 
+                       columns.includes("Product line");
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -32,7 +40,14 @@ const Dashboard = () => {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
-        setSalesData(results.data as SalesData[]);
+        const data = results.data as Record<string, string>[];
+        const filteredData = data.filter(row => Object.values(row).some(val => val));
+        
+        if (filteredData.length > 0) {
+          const cols = Object.keys(filteredData[0]);
+          setColumns(cols);
+          setCsvData(filteredData);
+        }
         setIsLoading(false);
       },
       error: () => {
@@ -97,16 +112,16 @@ INV030,2024-01-29,Sports and travel,3,289.90,Cash,Milwaukee,Normal`;
           </p>
         </div>
 
-        {salesData.length === 0 ? (
+        {csvData.length === 0 ? (
           <Card className="border-2 border-dashed p-12 text-center animate-scale-in">
             <div className="mx-auto max-w-md space-y-6">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
                 <Upload className="h-10 w-10 text-primary" />
               </div>
               <div>
-                <h2 className="mb-2 text-2xl font-semibold">Upload Sales Data</h2>
+                <h2 className="mb-2 text-2xl font-semibold">Upload CSV Data</h2>
                 <p className="text-muted-foreground">
-                  Upload a CSV file to start analyzing your supermarket sales
+                  Upload any CSV file to view analytics and insights
                 </p>
               </div>
               <div className="space-y-4">
@@ -152,19 +167,28 @@ INV030,2024-01-29,Sports and travel,3,289.90,Cash,Milwaukee,Normal`;
               </Button>
             </div>
 
-            <SalesMetrics data={salesData} />
+            {isSalesData ? (
+              <>
+                <SalesMetrics data={csvData as unknown as SalesData[]} />
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <SalesChart data={salesData} />
-              <CategoryChart data={salesData} />
-            </div>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <SalesChart data={csvData as unknown as SalesData[]} />
+                  <CategoryChart data={csvData as unknown as SalesData[]} />
+                </div>
 
-            <TopProducts data={salesData} />
+                <TopProducts data={csvData as unknown as SalesData[]} />
 
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Predictive Analytics</h2>
-              <PredictiveAnalytics data={salesData} />
-            </div>
+                <div className="mt-8">
+                  <h2 className="text-2xl font-semibold mb-4">Predictive Analytics</h2>
+                  <PredictiveAnalytics data={csvData as unknown as SalesData[]} />
+                </div>
+              </>
+            ) : (
+              <>
+                <GenericAnalytics data={csvData} columns={columns} />
+                <GenericDataTable data={csvData} columns={columns} />
+              </>
+            )}
           </div>
         )}
       </div>
