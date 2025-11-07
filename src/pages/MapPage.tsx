@@ -113,7 +113,7 @@ const StoreLocator = () => {
                   <div>
                     <h3 className="font-semibold">{store.name}</h3>
                     <p className="text-sm text-muted-foreground mt-1">{store.address}</p>
-                  </div>
+                  </div> 
                 </div>
               </Card>
             ))}
